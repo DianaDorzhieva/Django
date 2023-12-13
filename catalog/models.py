@@ -25,7 +25,7 @@ class Product(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=250, verbose_name='наименование')
     description = models.TextField(verbose_name='описание')
-    #created_at = models.DateTimeField(**NULLABLE) в терминале создала мирацию, применила. Потом откатила python manage.py migrate catalog 0001
+    #created_at = models.DateTimeField(**NULLABLE) в терминале создала миграцию, применила. Потом откатила python manage.py migrate catalog 0001
 
     def __str__(self):
         return f"Категория продукта - {self.name}"
