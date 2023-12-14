@@ -21,7 +21,7 @@ class Command(BaseCommand):
             {"name": "мухомор",
              "description": "есть нельзя, но он красивый",
              "image": "",
-             "category": Category(name="грибы", pk=2).save(),
+             "category": Category(pk=2).save(),
              "price_one": 70,
              "date_creation": "2023-12-12T11:35:16Z",
              "date_last_modification": "2023-12-12T11:35:22Z"},
@@ -29,7 +29,7 @@ class Command(BaseCommand):
             {"name": "черешня",
              "description": "ах какая вкусная",
              "image": "",
-             "category": Category(name="ягоды", pk=1).save(),
+             "category": Category(pk=1).save(),
              "price_one": 7000,
              "date_creation": "2023-12-12T11:35:16Z",
              "date_last_modification": "2023-12-12T11:35:22Z"}
