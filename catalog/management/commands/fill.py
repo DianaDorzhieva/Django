@@ -19,7 +19,6 @@ class Command(BaseCommand):
                           "name": "грибы",
                           "description": "Норм"}
                          ]
-        category_for_create = []
         for item in category_list:
             category_for_create.append(Category(**item))
         Category.objects.bulk_create(category_for_create)
@@ -27,7 +26,7 @@ class Command(BaseCommand):
         product_info = [
             {"name": "мухомор",
              "description": "Есть нельзя, но он красивый",
-             "image": "",
+             "image": "/media/1.jpg",
              "category_id": 2,
              "price_one": 70,
              "date_creation": "2023-12-12T11:35:16Z",
@@ -35,7 +34,7 @@ class Command(BaseCommand):
 
             {"name": "черешня",
              "description": "Ах какая вкусная",
-             "image": "",
+             "image": "/media/2.jpg",
              "category_id": 2,
              "price_one": 7000,
              "date_creation": "2023-12-12T11:35:16Z",
@@ -43,15 +42,15 @@ class Command(BaseCommand):
 
             {"name": "земляника",
              "description": "Вкусная, сладкая, притягательно ароматная ягода",
-             "image": "",
+             "image": "/media/3.jpg",
              "category_id": 1,
              "price_one": 5000,
              "date_creation": "2023-12-12T11:35:16Z",
              "date_last_modification": "2023-12-12T11:35:22Z"},
 
-            {"name": "смородина",
+            {"name": "клюква",
              "description": "Природный антибиотик",
-             "image": "",
+             "image": "/media/4.jpg",
              "category_id": 1,
              "price_one": 9000,
              "date_creation": "2023-12-12T11:35:16Z",
