@@ -14,9 +14,7 @@
               <div class="card mb-4 box-shadow">
                 <div class="card-body">
                     <img src="{{ object.image| my_teg }}" alt=" " />
-                  <p class="card-text">{{ object.name |title }}</p>
-                    <p class="card-text">{{ object.description|truncatechars:100  }}</p>
-                    <p class="card-text">{{ object.price_one  }} рублей за кг</p>
+                  <p class="card-text">{{ object.title }}</p>
                   <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
                       <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
