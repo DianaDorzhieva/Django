@@ -9,14 +9,11 @@
                     <div class="card body">
                         <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
-                            {{ form.as_p }}
+                            <p> Хотите удалить продукт {{ object.name }} ?></p>
                             <button type="submit">
-                                {% if object %}
-                                    Сохранить
-                                {% else %}
-                                    Создать
-                                {% endif %}
+                                    Подтвердить
                             </button>
+                            <a href="{% url 'catalog:catalog_product'%}"> Отмена </a>
                         </form>
                     </div>
                 </div>

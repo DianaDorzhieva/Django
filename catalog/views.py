@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from catalog.models import Product
+from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
+from django.urls import reverse_lazy
 
 
 # Create your views here.
@@ -22,3 +24,27 @@ def product(request):
         'object_list': product_list
     }
     return render(request, 'catalog/product.html', context)
+
+
+class ProductCreateView(CreateView):
+    model = Product
+    fields = ('name', 'description', 'image', 'category', 'price_one', 'date_creation',
+              'date_last_modification')
+    success_url = reverse_lazy('catalog:product_list')
+
+class ProductListView(ListView):
+    model = Product
+
+
+class ProductDetailView(DetailView):
+    model = Product
+
+class ProductUpdateView(UpdateView):
+    model = Product
+    fields = ('name', 'description', 'image', 'category', 'price_one', 'date_creation',
+              'date_last_modification')
+    success_url = reverse_lazy('catalog:product_list')
+
+class ProductDeleteView(DeleteView):
+    model = Product
+    success_url = reverse_lazy('catalog:product_list')
