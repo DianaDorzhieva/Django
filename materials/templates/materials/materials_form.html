@@ -6,10 +6,17 @@
             <div class="card body">
                 <form method="post">
                     {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-success">
-                        Создать
+                            {{ form.as_p }}
+                    <button type="submit">
+                                {% if object %}
+                                    Сохранить
+                                {% else %}
+                                    Создать
+                                {% endif %}
                     </button>
+                    <button type="submit">
+                     <a href="{% url 'materials:list'%}"> Назад </a>
+                        </button>
                 </form>
             </div>
         </div>

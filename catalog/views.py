@@ -2,6 +2,7 @@ from django.shortcuts import render
 from catalog.models import Product
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView,TemplateView
 from django.urls import reverse_lazy
+from pytils.translit import slugify
 
 
 # Create your views here.
@@ -30,6 +31,15 @@ class ProductCreateView(CreateView):
     fields = ('name', 'description', 'image', 'category', 'price_one', 'date_creation',
               'date_last_modification')
     success_url = reverse_lazy('catalog:catalog_product')
+
+    def form_valid(self, form):
+        if form.is_valid():
+            new_mat = form.save()
+            new_mat.slug = slugify(new_mat.title)
+            new_mat.save()
+        return super().form_valid(form)
+
+
 
 class ProductListView(ListView):
     model = Product

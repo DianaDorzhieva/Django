@@ -1,10 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'catalog/base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card header">
+                        <h3 class="card-title">
+                            Статья: {{ object.title|title }}
+                        </h3>
+                    </div>
+                    <div class="card body">
+                        <table class="table">
+
+                              <tr>
+                                <td>{{ object.body }}</td>
+                              </tr>
+                            <tr>
+                                <td>{{ object.date_creation }}</td>
+                              </tr>
+                             <tr>
+                                <td> Опубликовано: {{ object.is_published|title }}</td>
+                             </tr>
+                             <tr>
+                                <td>Количество просмотров: {{ object.count_view|title }} </td>
+                             </tr>
+                             <tr>
+                                <td>{{ object.date_creation }}</td>
+                             </tr>
+                             <tr>
+                                 <td>Cлаг: {{ object.slug }}</td>
+                            </tr>
+                        </table>
+                         <button type="submit">
+                     <a href="{% url 'materials:list'%}"> Назад </a>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
