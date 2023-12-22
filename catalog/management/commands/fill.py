@@ -1,6 +1,5 @@
 from catalog.models import Product, Category
 from django.core.management import BaseCommand
-import json
 
 
 class Command(BaseCommand):
@@ -26,7 +25,7 @@ class Command(BaseCommand):
         product_info = [
             {"name": "мухомор",
              "description": "Есть нельзя, но он красивый",
-             "image": "/media/1.jpg",
+             "image": "products/1.jpg",
              "category_id": 2,
              "price_one": 70,
              "date_creation": "2023-12-12T11:35:16Z",
@@ -34,7 +33,7 @@ class Command(BaseCommand):
 
             {"name": "черешня",
              "description": "Ах какая вкусная",
-             "image": "/media/2.jpg",
+             "image": "products/2.jpg",
              "category_id": 2,
              "price_one": 7000,
              "date_creation": "2023-12-12T11:35:16Z",
@@ -42,7 +41,7 @@ class Command(BaseCommand):
 
             {"name": "земляника",
              "description": "Вкусная, сладкая, притягательно ароматная ягода",
-             "image": "/media/3.jpg",
+             "image": "products/3.jpg",
              "category_id": 1,
              "price_one": 5000,
              "date_creation": "2023-12-12T11:35:16Z",
@@ -50,7 +49,7 @@ class Command(BaseCommand):
 
             {"name": "клюква",
              "description": "Природный антибиотик",
-             "image": "/media/4.jpg",
+             "image": "products/4.jpg",
              "category_id": 1,
              "price_one": 9000,
              "date_creation": "2023-12-12T11:35:16Z",
@@ -61,3 +60,6 @@ class Command(BaseCommand):
             product_for_create.append(Product(**item_product))
 
         Product.objects.bulk_create(product_for_create)
+
+
+
