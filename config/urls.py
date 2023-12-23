@@ -19,10 +19,10 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    # path('contacts/', contact), #http://127.0.0.1:8000/contacts/
-    # path('home/', home_page) #http://127.0.0.1:8000/home/
-    path('', include('catalog.urls'))
-] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+                  path('admin/', admin.site.urls),
+                  # path('contacts/', contact), #http://127.0.0.1:8000/contacts/
+                  # path('home/', home_page) #http://127.0.0.1:8000/home/
+                  path('', include('catalog.urls', namespace='catalog')),
+                  path('materials/', include('materials.urls', namespace='materials'))
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
