@@ -1,0 +1,51 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card header">
+                        <h3 class="card-title">
+                            Информация о версии
+                        </h3>
+                    </div>
+                    <div class="card body">
+                        <table class="table">
+                            <tr>
+                                <td Название ></td>
+                            </tr>
+                              <tr>
+                                <td>{{ object.product|title }}</td>
+                              </tr>
+                            <tr>
+                                <td>{{ object.number  }}</td>
+                              </tr>
+                             <tr>
+                                <td>{{ object.name_version|title }}</td>
+                             </tr>
+                             <tr>
+                                <td>{{ object.active_version|title }}рублей</td>
+                             </tr>
+
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
