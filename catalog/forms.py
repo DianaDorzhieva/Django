@@ -41,11 +41,13 @@ class VersionForm(StyleFormMixin, forms.ModelForm):
 
 
 
-    def clean_is_active(self):
+    def clean_active_version(self):
         cleaned_data = self.cleaned_data.get('active_version')
         if cleaned_data:
-           return cleaned_data
-        else:
-            'нет активной версии'
+            version = self.cleaned_data['product'].version_set.filter(active_version=True)
+            if version:
+                raise forms.ValidationError('Ошибка, у продукта уже есть активная версия!')
+
+        return cleaned_data
 
 

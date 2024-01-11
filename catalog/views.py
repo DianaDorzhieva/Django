@@ -106,12 +106,12 @@ def toggle_activity(request, pk):
 
     return redirect(reverse('catalog:catalog_product'))
 
-# class VersionListView(ListView):
-#     model = Version
-#
-#
-# class VersionDetailView(DetailView):
-#     model = Version
+class VersionListView(ListView):
+    model = Version
+
+
+class VersionDetailView(DetailView):
+    model = Version
 
 
 
