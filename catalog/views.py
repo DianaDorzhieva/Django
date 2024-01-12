@@ -56,7 +56,6 @@ class ProductUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         VersionFormset = inlineformset_factory(Product, Version, extra=1, form=VersionForm)
-
         if self.request.method == 'POST':
             context_data['formset'] = VersionFormset(self.request.POST, instance=self.object)
         else:

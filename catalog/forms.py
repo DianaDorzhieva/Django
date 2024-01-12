@@ -50,4 +50,12 @@ class VersionForm(StyleFormMixin, forms.ModelForm):
 
         return cleaned_data
 
+    def chek_version(self):
+        active_version = self.cleaned_data.get('active_version')
+        if active_version == False:
+            raise ValueError('нет активной версии')
+        else:
+            return active_version
+
+
 
