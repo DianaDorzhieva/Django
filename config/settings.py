@@ -132,3 +132,11 @@ MEDIA_ROOT = (BASE_DIR / 'media')
 AUTH_USER_MODEL = 'users.User'
 LOGIN_REDIRECT_URL = 'catalog_product/'
 LOGOUT_REDIRECT_URL = 'catalog_product/'
+#LOGIN_URL = '/'
+
+EMAIL_HOST =
+EMAIL_PORT =
+EMAIL_HOST_USER =
+EMAIL_HOST_PASSWORD =
+EMAIL_USE_SSL = True
+
