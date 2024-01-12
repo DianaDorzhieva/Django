@@ -24,5 +24,7 @@ urlpatterns = [
                   # path('contacts/', contact), #http://127.0.0.1:8000/contacts/
                   # path('home/', home_page) #http://127.0.0.1:8000/home/
                   path('', include('catalog.urls', namespace='catalog')),
-                  path('materials/', include('materials.urls', namespace='materials'))
+                  path('materials/', include('materials.urls', namespace='materials')),
+                  path('users/', include('users.urls', namespace='users'))
+
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
