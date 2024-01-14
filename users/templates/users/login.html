@@ -13,14 +13,12 @@
                                             <div class="card-body">
                                             {% csrf_token %}
                                             {{ form.as_p }}
-                                                <button type="submit">
-
-                                                            Войти
-
-                                                </button>
+                                                <button type="submit">Войти!</button>
+                                                <p><a href="{% url 'users:password_reset' %}">Забыли пароль?</a></p>
                                         </div>
                                         <div class="card-footer"></div>
                                      </div>
+
                                  </div>
 
 
