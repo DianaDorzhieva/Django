@@ -8,6 +8,9 @@ NULLABLE = {'blank': True, 'null': True}
 
 # Create your models here.
 class Product(models.Model):
+    activity = [(True, 'Опубликовано'),
+                (False, 'Неопубликовано')]
+
     name = models.CharField(max_length=250, verbose_name='наименование')
     description = models.TextField(verbose_name='описание')
     image = models.ImageField(upload_to='products/', verbose_name='изображение', **NULLABLE)
@@ -16,6 +19,7 @@ class Product(models.Model):
     price_one = models.IntegerField(verbose_name='цена за штуку')
     date_creation = models.DateTimeField(verbose_name='дата создания')
     date_last_modification = models.DateTimeField(verbose_name='дата последнего изменения')
+    is_published = models.BooleanField(verbose_name="Опубликовано", default=True, choices=activity)
 
     author = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, verbose_name='автор',
                                **NULLABLE)

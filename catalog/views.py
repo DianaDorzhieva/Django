@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import Http404
 from django.shortcuts import render
 from catalog.models import Product, Version
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView, \
@@ -46,6 +47,25 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
 class ProductListView(LoginRequiredMixin, ListView):
     model = Product
 
+    def get_queryset(self):
+        product_list = super().get_queryset()
+        if self.request.user.groups.filter(name='Модератор').exists():
+            return product_list
+        else:
+            return product_list.filter(is_published=True)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ProductListView, self).get_context_data(**kwargs)
+        for object in context['product_list']:
+
+            active_version = Version.objects.filter(product=object, active_version=True).last()
+            if active_version:
+                object.active_version_number = active_version.number
+                object.name_version = active_version.name_version
+            else:
+                object.active_version_number = None
+        return context
+
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
@@ -75,10 +95,30 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
 
         return super().form_valid(form)
 
+    def get_object(self, queryset=None):
+
+        self.object = super().get_object(queryset)
+        if self.request.user.groups.filter(
+            name='Модератор').exists() or self.request.user.is_superuser:
+            return self.object
+        if  self.object.author != self.request.user:
+            raise Http404("Вы не являетесь владельцем этого товара")
+        return self.object
+
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('catalog:catalog_product')
+
+    def get_object(self, queryset=None):
+
+        self.object = super().get_object(queryset)
+        if self.request.user.groups.filter(
+            name='Модератор').exists() or self.request.user.is_superuser:
+            return self.object
+        if self.object.author != self.request.user:
+            raise Http404("Вы не являетесь владельцем этого товара")
+        return self.object
 
 
 class HomeView(LoginRequiredMixin, TemplateView):
@@ -95,7 +135,6 @@ class ContactView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         return context_data
-
 
 
 def toggle_activity(request, pk):
