@@ -33,6 +33,13 @@
                              <tr>
                                  <td>{{ object.date_last_modification }}</td>
                             </tr>
+                             <tr>
+                                 {% if object.author %}
+                                 <td> Автор продукта: {{ object.author }}</td>
+                                 {% else %}
+                                 <td> Автор неизвестен</td>
+                                 {% endif %}
+                            </tr>
                         </table>
                     </div>
                 </div>

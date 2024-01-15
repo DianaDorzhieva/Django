@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import post_save
@@ -15,6 +16,9 @@ class Product(models.Model):
     price_one = models.IntegerField(verbose_name='цена за штуку')
     date_creation = models.DateTimeField(verbose_name='дата создания')
     date_last_modification = models.DateTimeField(verbose_name='дата последнего изменения')
+
+    author = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, verbose_name='автор',
+                               **NULLABLE)
 
     def __str__(self):
         return f" {self.name}:" \
@@ -48,9 +52,8 @@ class Version(models.Model):
                                 **NULLABLE)
     number = models.IntegerField(verbose_name='номер версии')
     name_version = models.CharField(max_length=250, verbose_name='название версии')
-    active_version = models.BooleanField(verbose_name='признак текущей версии', choices=activity,default=False)
-
-
+    active_version = models.BooleanField(verbose_name='признак текущей версии', choices=activity,
+                                         default=False)
 
     def __str__(self):
         return f"{self.product} - версия номер {self.number}, название: {self.name_version} "

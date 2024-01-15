@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from catalog.models import Product, Version
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView, \
@@ -9,7 +11,8 @@ from django.forms import inlineformset_factory
 from django.shortcuts import render, get_object_or_404, redirect
 
 
-# Create your views here.
+# Create your views here
+@login_required
 def contact(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -27,7 +30,7 @@ def contact(request):
 #     return render(request, 'catalog/product.html', context)
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:catalog_product')
@@ -40,15 +43,15 @@ class ProductCreateView(CreateView):
         return super().form_valid(form)
 
 
-class ProductListView(ListView):
+class ProductListView(LoginRequiredMixin, ListView):
     model = Product
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:catalog_product')
@@ -73,12 +76,12 @@ class ProductUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('catalog:catalog_product')
 
 
-class HomeView(TemplateView):
+class HomeView(LoginRequiredMixin, TemplateView):
     template_name = 'catalog/home_page.html'
 
     def get_context_data(self, **kwargs):
@@ -86,12 +89,13 @@ class HomeView(TemplateView):
         return context_data
 
 
-class ContactView(TemplateView):
+class ContactView(LoginRequiredMixin, TemplateView):
     template_name = 'catalog/contact.html'
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         return context_data
+
 
 
 def toggle_activity(request, pk):
@@ -105,13 +109,10 @@ def toggle_activity(request, pk):
 
     return redirect(reverse('catalog:catalog_product'))
 
-class VersionListView(ListView):
+
+class VersionListView(LoginRequiredMixin, ListView):
     model = Version
 
 
-class VersionDetailView(DetailView):
+class VersionDetailView(LoginRequiredMixin, DetailView):
     model = Version
-
-
-
-
