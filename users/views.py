@@ -4,7 +4,6 @@ import string
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.tokens import default_token_generator
-
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ValidationError
 from django.shortcuts import redirect, render
@@ -19,8 +18,10 @@ from users.forms import UserRegisterForm, UserForm
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.views import LoginView as BaseLogoutView
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.conf import settings
+
+
 
 
 class LoginView(BaseLoginView):
@@ -40,55 +41,51 @@ class RegisterView(CreateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        user = form.save(commit=False)
-        user.is_active = False
-        user.save()
+        new_user = form.save()
         # Функционал для отправки письма и генерации токена
-        token = default_token_generator.make_token(user)
-        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = default_token_generator.make_token(new_user)
+        new_user.email_verification_token = token
+        uid = urlsafe_base64_encode(force_bytes(new_user.pk))
+        new_user.email_verification_token = token
+        new_user.save()
         current_site = get_current_site(self.request)
-        message = render_to_string(
-            'users/verify_email.html',
-            {'user': user,
-             'domain': current_site.domain,
-             'token': token,
-             'uid': uid,
-             }
-        )
-        plain_message = strip_tags(message)
 
-        send_mail(subject='Подтверждение',
-                  message=plain_message,
-                  fail_silently=False,
-                  from_email=settings.EMAIL_HOST_USER,
-                  recipient_list=[user.email]
-                  )
+        mail_subject = ('Подтверждение регистрации')
+        html_message = render_to_string(
+            'users/verify_email.html',
+            {
+                'user': new_user,
+                'domain': current_site.domain,
+                'token': token,
+                'uid': uid,
+            })
+
+        plain_message = strip_tags(html_message)
+        message = EmailMultiAlternatives(mail_subject,
+                                         plain_message,
+                                         settings.EMAIL_HOST_USER,
+                                         [new_user.email]
+                                         )
+
+        message.attach_alternative(html_message,  "text/html")
+        message.send()
         return response
 
 
 class VerifyEmailView(View):
-    def get_user(uidb64):
-        try:
-            uid = urlsafe_base64_decode(uidb64).decode()
-            user = User.objects.get(pk=uid)
-        except (TypeError, ValueError, OverflowError, User.DoesNotExist, ValidationError):
-            user = None
-        return user
 
-    def get(self, request, uidb64, token):
+    def get(self, request, token):
         try:
-            uid = urlsafe_base64_decode(uidb64)
-            user = User.objects.get(pk=uid)
-        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-            user = None
-
-        if user is not None and default_token_generator.check_token(user, token):
+            user = User.objects.get(email_verificator=token)
             user.is_active = True
             user.save()
-            login(request, user)
-            return redirect('users:registration_success')
-        else:
-            return redirect('users:registration_failed')
+            return render(request, 'users:registration_success')
+        except User.DoesNotExist:
+            return render(request, 'users:registration_failed')
+
+
+
+
 
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
