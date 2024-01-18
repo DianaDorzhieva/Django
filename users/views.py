@@ -69,6 +69,7 @@ class RegisterView(CreateView):
 
         message.attach_alternative(html_message,  "text/html")
         message.send()
+        new_user.is_active = False
         return response
 
 
