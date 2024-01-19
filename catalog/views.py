@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import Http404
 from django.shortcuts import render
 from catalog.models import Product, Version
@@ -31,9 +31,10 @@ def contact(request):
 #     return render(request, 'catalog/product.html', context)
 
 
-class ProductCreateView(LoginRequiredMixin, CreateView):
+class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
+    permission_required = 'catalog.add_product'
     success_url = reverse_lazy('catalog:catalog_product')
 
     def form_valid(self, form):
@@ -42,6 +43,10 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
             new_mat.slug = slugify(new_mat.name)
             new_mat.save()
         return super().form_valid(form)
+
+
+
+
 
 
 class ProductListView(LoginRequiredMixin, ListView):
@@ -101,7 +106,7 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
         if self.request.user.groups.filter(
             name='Модератор').exists() or self.request.user.is_superuser:
             return self.object
-        if  self.object.author != self.request.user:
+        if self.object.author != self.request.user:
             raise Http404("Вы не являетесь владельцем этого товара")
         return self.object
 
@@ -113,10 +118,10 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
     def get_object(self, queryset=None):
 
         self.object = super().get_object(queryset)
-        if self.request.user.groups.filter(
-            name='Модератор').exists() or self.request.user.is_superuser:
+        if self.request.user.is_superuser:
             return self.object
-        if self.object.author != self.request.user:
+        if self.object.author != self.request.user or self.request.user.groups.filter(
+            name='Модератор').exists():
             raise Http404("Вы не являетесь владельцем этого товара")
         return self.object
 
