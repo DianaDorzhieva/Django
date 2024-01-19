@@ -41,7 +41,8 @@ class RegisterView(CreateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        new_user = form.save()
+        new_user = form.save(commit=False)
+        new_user.is_active = False
         # Функционал для отправки письма и генерации токена
         token = default_token_generator.make_token(new_user)
         new_user.email_verification_token = token
@@ -69,7 +70,6 @@ class RegisterView(CreateView):
 
         message.attach_alternative(html_message,  "text/html")
         message.send()
-        new_user.is_active = False
         return response
 
 
