@@ -31,10 +31,9 @@ def contact(request):
 #     return render(request, 'catalog/product.html', context)
 
 
-class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class ProductCreateView(LoginRequiredMixin,  CreateView):
     model = Product
     form_class = ProductForm
-    permission_required = 'catalog.add_product'
     success_url = reverse_lazy('catalog:catalog_product')
 
     def form_valid(self, form):
@@ -54,7 +53,7 @@ class ProductListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         product_list = super().get_queryset()
-        if self.request.user.groups.filter(name='Модератор').exists():
+        if self.request.user.is_staff or self.request.user.is_superuser:
             return product_list
         else:
             return product_list.filter(is_published=True)
@@ -103,8 +102,7 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
 
         self.object = super().get_object(queryset)
-        if self.request.user.groups.filter(
-            name='Модератор').exists() or self.request.user.is_superuser:
+        if self.request.user.is_superuser or self.request.user.is_staff:
             return self.object
         if self.object.author != self.request.user:
             raise Http404("Вы не являетесь владельцем этого товара")
@@ -120,8 +118,7 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
         self.object = super().get_object(queryset)
         if self.request.user.is_superuser:
             return self.object
-        if self.object.author != self.request.user or self.request.user.groups.filter(
-            name='Модератор').exists():
+        if self.object.author != self.request.user:
             raise Http404("Вы не являетесь владельцем этого товара")
         return self.object
 
