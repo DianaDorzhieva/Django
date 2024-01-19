@@ -31,7 +31,7 @@ def contact(request):
 #     return render(request, 'catalog/product.html', context)
 
 
-class ProductCreateView(LoginRequiredMixin,  CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:catalog_product')
@@ -42,10 +42,6 @@ class ProductCreateView(LoginRequiredMixin,  CreateView):
             new_mat.slug = slugify(new_mat.name)
             new_mat.save()
         return super().form_valid(form)
-
-
-
-
 
 
 class ProductListView(LoginRequiredMixin, ListView):
@@ -75,9 +71,10 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
 
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
+class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
+    permission_required = 'catalog.change_product'
     success_url = reverse_lazy('catalog:catalog_product')
 
     def get_context_data(self, **kwargs):
@@ -102,7 +99,7 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
 
         self.object = super().get_object(queryset)
-        if self.request.user.is_superuser or self.request.user.is_staff:
+        if self.request.user.groups.filter(name='Модератор').exists() or self.request.user.is_superuser:
             return self.object
         if self.object.author != self.request.user:
             raise Http404("Вы не являетесь владельцем этого товара")
