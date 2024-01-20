@@ -49,7 +49,8 @@ class ProductListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         product_list = super().get_queryset()
-        if self.request.user.is_staff or self.request.user.is_superuser:
+        if self.request.user.groups.filter(
+            name='Модератор').exists() or self.request.user.is_superuser:
             return product_list
         else:
             return product_list.filter(is_published=True)
@@ -74,7 +75,11 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
 class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
-    permission_required = 'catalog.change_product'
+    permission_required = [
+        'catalog.can_change_is_published_permission',
+        'catalog.can_change_desc_permission',
+        'catalog.can_change_category_permission',
+    ]
     success_url = reverse_lazy('catalog:catalog_product')
 
     def get_context_data(self, **kwargs):
@@ -99,7 +104,8 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
     def get_object(self, queryset=None):
 
         self.object = super().get_object(queryset)
-        if self.request.user.groups.filter(name='Модератор').exists() or self.request.user.is_superuser:
+        if self.request.user.groups.filter(
+            name='Модератор').exists() or self.request.user.is_superuser:
             return self.object
         if self.object.author != self.request.user:
             raise Http404("Вы не являетесь владельцем этого товара")

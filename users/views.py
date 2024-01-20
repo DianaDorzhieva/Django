@@ -22,8 +22,6 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 from django.conf import settings
 
 
-
-
 class LoginView(BaseLoginView):
     template_name = 'users/login.html'
     extra_context = {'title': "Авторизация"}
@@ -46,7 +44,6 @@ class RegisterView(CreateView):
         # Функционал для отправки письма и генерации токена
         token = default_token_generator.make_token(new_user)
         new_user.email_verification_token = token
-        uid = urlsafe_base64_encode(force_bytes(new_user.pk))
         new_user.email_verification_token = token
         new_user.save()
         current_site = get_current_site(self.request)
@@ -57,8 +54,7 @@ class RegisterView(CreateView):
             {
                 'user': new_user,
                 'domain': current_site.domain,
-                'token': token,
-                'uid': uid,
+                'token': token
             })
 
         plain_message = strip_tags(html_message)
@@ -68,7 +64,7 @@ class RegisterView(CreateView):
                                          [new_user.email]
                                          )
 
-        message.attach_alternative(html_message,  "text/html")
+        message.attach_alternative(html_message, "text/html")
         message.send()
         return response
 
@@ -77,16 +73,12 @@ class VerifyEmailView(View):
 
     def get(self, request, token):
         try:
-            user = User.objects.get(email_verificator=token)
+            user = User.objects.get(email_verification_token=token)
             user.is_active = True
             user.save()
-            return render(request, 'users:registration_success')
+            return render(request, 'users/registration_success.html')
         except User.DoesNotExist:
-            return render(request, 'users:registration_failed')
-
-
-
-
+            return render(request, 'users/registration_failed.html')
 
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):

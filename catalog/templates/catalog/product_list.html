@@ -25,10 +25,10 @@
 
                       <button type="button" class="btn btn-sm btn-outline-secondary"  >View</button></a>
                         <a href="{% url 'catalog:edit_product' object.pk %}">
-                            {% if perms.catalog.change_product %}
+
                       <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button></a>
                         <a href="{% url 'catalog:delete_product' object.pk %}">
-                            {% endif %}
+
                          <button type="button" class="btn btn-sm btn-outline-secondary">Delete</button></a>
 
                         {% for version in object.version_set.all %}

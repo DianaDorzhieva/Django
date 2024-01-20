@@ -33,6 +33,12 @@ class Product(models.Model):
         verbose_name_plural = 'продукты'
         ordering = ('price_one',)
 
+        permissions = [
+            ('can_change_is_published_permission', 'Can cancel product publication'),
+            ('can_change_desc_permission', 'Can change product description'),
+            ('can_change_category_permission', 'Can change product category'),
+        ]
+
 
 class Category(models.Model):
     name = models.CharField(max_length=250, verbose_name='наименование')
