@@ -31,6 +31,10 @@
 
                          <button type="button" class="btn btn-sm btn-outline-secondary">Delete</button></a>
 
+                        <a href="{% url 'catalog:category'  %}">
+
+                         <button type="button" class="btn btn-sm btn-outline-secondary">Категория</button></a>
+
                         {% for version in object.version_set.all %}
                             {% if version.active_version  and user.is_authenticated %}
                                     <button type="button" class="btn btn-sm btn-outline-secondary">Версия  {{ version.name_version }}</button></a>

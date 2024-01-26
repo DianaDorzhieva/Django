@@ -1,8 +1,12 @@
+
+
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.cache import cache
 from django.http import Http404
 from django.shortcuts import render
-from catalog.models import Product, Version
+from catalog.models import Product, Version, Category
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView, \
     TemplateView
 from django.urls import reverse_lazy, reverse
@@ -71,6 +75,22 @@ class ProductListView(LoginRequiredMixin, ListView):
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        if settings.CACHE_ENABLED:
+            key = f'subject_list_{self.object.pk}'
+            subject_list = cache.get(key)
+            if subject_list is None:
+                subject_list = self.object.subject_set.all()
+                cache.set(key,subject_list)
+        else:
+            subject_list = self.object.subject_set.all()
+
+
+        context_data['subjects'] = subject_list
+
+        return context_data
 
 
 class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
@@ -161,3 +181,25 @@ class VersionListView(LoginRequiredMixin, ListView):
 
 class VersionDetailView(LoginRequiredMixin, DetailView):
     model = Version
+
+
+class CategoryListView(LoginRequiredMixin, ListView):
+    model = Category
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        if settings.CACHE_ENABLED:
+            key = 'category_list'
+            category_list = cache.get(key)
+            if category_list is None:
+                category_list = Category.objects.all()
+                cache.set(key, category_list)
+
+        else:
+            category_list = Category.objects.all()
+
+        context_data['category_list'] = category_list
+
+        return context_data
+
+

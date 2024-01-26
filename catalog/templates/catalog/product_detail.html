@@ -22,7 +22,8 @@
                                 <td>{{ object.description }}</td>
                               </tr>
                              <tr>
-                                <td>{{ object.category|title }}</td>
+                                 <a href="{% url 'catalog:category'  %}">
+                                     <td>{{ object.category|title }}</td> </a>>
                              </tr>
                              <tr>
                                 <td>{{ object.price_one|title }}рублей</td>
