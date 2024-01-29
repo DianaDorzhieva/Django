@@ -13,6 +13,8 @@ from catalog.forms import ProductForm, VersionForm
 from django.forms import inlineformset_factory
 from django.shortcuts import render, get_object_or_404, redirect
 
+from catalog.services import  get_cache
+
 
 # Create your views here
 @login_required
@@ -184,20 +186,13 @@ class VersionDetailView(LoginRequiredMixin, DetailView):
 class CategoryListView(LoginRequiredMixin, ListView):
     model = Category
 
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        if settings.CACHE_ENABLED:
-            key = 'category_list'
-            category_list = cache.get(key)
-            if category_list is None:
-                category_list = Category.objects.all()
-                cache.set(key, category_list)
 
-        else:
-            category_list = Category.objects.all()
-
-        context_data['category_list'] = category_list
-
-        return context_data
+def get_context_data(self, *args, **kwargs):
+    context_data = super().get_context_data(*args, **kwargs)
+    if settings.CACHE_ENABLED:
+        context_data['category_list'] = get_cache()
+    else:
+        context_data['category_list'] = Category.objects.all()
+    return context_data
 
 
